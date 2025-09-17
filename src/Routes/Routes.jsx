@@ -1,6 +1,6 @@
 import {
   createBrowserRouter,
- 
+
 } from "react-router-dom";
 import Main from "../Layout/Main";
 import Home from "../pages/Home/Home/Home";
@@ -15,6 +15,9 @@ import Dashboard from "../Layout/Dashboard";
 import Cart from "../pages/Dashboard/Cart/Cart";
 import AllUsers from "../pages/Dashboard/AllUsers/AllUsers";
 import AddItems from "../pages/Dashboard/AddItems/AddItems";
+import ManageItems from "../pages/Dashboard/ManageItems/ManageItems";
+import UpdateItem from "../pages/Dashboard/UpdateItem/UpdateItem";
+import AdminRoute from "./AdminRoute";
 
 
 
@@ -22,7 +25,7 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <Main></Main>,
-    
+
     children: [
       {
         path: "/",
@@ -30,19 +33,19 @@ const router = createBrowserRouter([
       },
       {
         path: "/menu",
-        element:<Menu></Menu>
+        element: <Menu></Menu>
       },
       {
         path: "/order/:category",
-        element:<Order></Order>
+        element: <Order></Order>
       },
       {
         path: "/contact",
-        element:<ContactManager></ContactManager>
+        element: <ContactManager></ContactManager>
       },
       {
         path: "/login",
-        element:<Login></Login>
+        element: <Login></Login>
       },
       {
         path: "/signup",
@@ -55,21 +58,36 @@ const router = createBrowserRouter([
     ],
   },
   {
-    path:"dashboard",
-    element:<PrivateRoute><Dashboard></Dashboard></PrivateRoute>,
-    children:[
+    path: "dashboard",
+    element: <PrivateRoute><Dashboard></Dashboard></PrivateRoute>,
+    children: [
       {
         path: "cart",
-        element:<Cart></Cart> 
+        element: <Cart></Cart>
       },
       {
         path: "users",
-        element:<AllUsers></AllUsers>
+        element: <AdminRoute><AllUsers></AllUsers></AdminRoute>
       },
       {
         path: "addItems",
-        element:<AddItems></AddItems>
+        element: <AdminRoute><AddItems></AddItems></AdminRoute>
       },
+      {
+        path: "manageItems",
+        element: <AdminRoute><ManageItems></ManageItems></AdminRoute>
+      },
+      {
+        path: "updateItem/:id",
+        element: <AdminRoute><UpdateItem /></AdminRoute>,
+        loader: async ({ params }) => {
+          const res = await fetch(`http://localhost:5000/menu/${params.id}`);
+          if (!res.ok) throw new Error("Item not found");
+          return res.json();
+        }
+      }
+
+
 
     ]
   }
