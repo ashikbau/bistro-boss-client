@@ -50,7 +50,7 @@ const NavBar = () => {
     <li><NavLink to="/menu">Our Menu</NavLink></li>
     <li><NavLink to="/order/salad">Order Food</NavLink></li>
     <li><NavLink to="/contact">Contact</NavLink></li>
-    <li><NavLink to="/secret">Secret</NavLink></li>
+    <li><NavLink to="/book">Booking</NavLink></li>
     <li><NavLink to="/dashboard/cart">
       <button  className="btn">
         <FaShoppingCart className="mr-2"></FaShoppingCart>
@@ -116,7 +116,7 @@ const NavBar = () => {
             }
           </ul>
         </div>
-        <div className="navbar-end">
+        {/* <div className="navbar-end">
           <button
             onClick={() => {
               Swal.default.fire({
@@ -130,7 +130,7 @@ const NavBar = () => {
           >
             Test Alert
           </button>
-        </div>
+        </div> */}
       </div>
     </>
   );

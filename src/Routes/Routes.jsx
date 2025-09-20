@@ -18,6 +18,10 @@ import AddItems from "../pages/Dashboard/AddItems/AddItems";
 import ManageItems from "../pages/Dashboard/ManageItems/ManageItems";
 import UpdateItem from "../pages/Dashboard/UpdateItem/UpdateItem";
 import AdminRoute from "./AdminRoute";
+import AdminHome from "../pages/Dashboard/AdminHome/AdminHome";
+import Payment from "../pages/Dashboard/Payment/Payment";
+import PaymentHistory from "../pages/Dashboard/PaymentHistory/PaymentHistory";
+import BookingPage from "../pages/Bookings/BookingPage/BookingPage";
 
 
 
@@ -55,6 +59,10 @@ const router = createBrowserRouter([
         path: "/secret",
         element: <PrivateRoute><Secret></Secret></PrivateRoute>
       },
+      {
+        path: "/book",
+        element: <PrivateRoute><BookingPage></BookingPage></PrivateRoute>
+      },
     ],
   },
   {
@@ -64,6 +72,18 @@ const router = createBrowserRouter([
       {
         path: "cart",
         element: <Cart></Cart>
+      },
+      {
+        path: 'payment',
+        element: <Payment></Payment>
+      },
+      {
+        path: 'paymentHistory',
+        element: <PaymentHistory></PaymentHistory>
+      },
+      {
+        path: "adminHome",
+        element: <AdminHome></AdminHome>
       },
       {
         path: "users",
@@ -85,7 +105,7 @@ const router = createBrowserRouter([
           if (!res.ok) throw new Error("Item not found");
           return res.json();
         }
-      }
+      },
 
 
 

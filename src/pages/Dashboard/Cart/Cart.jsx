@@ -4,6 +4,7 @@ import SectionTitle from '../../../components/SectionTitle/SectionTitle';
 import { FaTrashAlt } from 'react-icons/fa';
 import Swal from 'sweetalert2';
 import useAxiosSecure from '../../../hooks/useAxiosSecure';
+import { Link } from 'react-router-dom';
 
 const Cart = () => {
     const [cart,refetch] = useCart();
@@ -50,13 +51,17 @@ const Cart = () => {
                     subHeading="My Cart"
                 ></SectionTitle>
             </div>
-            <div className='flex p-8 justify-evenly mb-4'>
-                <h2 className='text-4xl'>Items : {cart.length}</h2>
-                <h2 className='text-4xl'>Total Price : ${totalPrice.toFixed(2)}</h2>
-                <button className='btn btn-primary rounded'>Pay</button>
+            <div className='flex flex-col sm:flex-row sm:justify-evenly sm:items-center gap-4 p-4 mb-4'>
+                <h2 className='text-2xl sm:text-3xl text-center'>Items : {cart.length}</h2>
+                <h2 className='text-2xl sm:text-3xl text-center'>Total Price : ${totalPrice.toFixed(2)}</h2>
+                 {cart.length ? <Link to="/dashboard/payment">
+                    <button className="btn btn-primary">Pay</button>
+                </Link>:
+                <button disabled className="btn btn-primary">Pay</button>
+                }
             </div>
             <div className="overflow-x-auto">
-                <table className="table w-full">
+                <table className="table w-full text-sm sm:text-base">
                     {/* head */}
                     <thead>
                         <tr>
