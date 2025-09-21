@@ -3,6 +3,7 @@ import useAxiosPublic from '../../hooks/useAxiosPublic';
 
 const BookingModal = ({ date, slot, onClose }) => {
     const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
     const [guests, setGuests] = useState(2);
     const [status, setStatus] = useState('');
     const axiosPublic = useAxiosPublic();
@@ -13,6 +14,8 @@ const BookingModal = ({ date, slot, onClose }) => {
             date: date.toISOString().split('T')[0],
             time: slot,
             name,
+            email,
+           
             guests
         })
             .then(() => setStatus('Reservation confirmed!'))
@@ -43,6 +46,14 @@ const BookingModal = ({ date, slot, onClose }) => {
                             className="border p-2 w-full"
                             value={name}
                             onChange={e => setName(e.target.value)}
+                            required
+                        />
+                        <input
+                            type="email"
+                            placeholder="Your Email"
+                            className="border p-2 w-full"
+                            value={email}
+                            onChange={e => setEmail(e.target.value)}
                             required
                         />
                         <input

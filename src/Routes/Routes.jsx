@@ -22,6 +22,11 @@ import AdminHome from "../pages/Dashboard/AdminHome/AdminHome";
 import Payment from "../pages/Dashboard/Payment/Payment";
 import PaymentHistory from "../pages/Dashboard/PaymentHistory/PaymentHistory";
 import BookingPage from "../pages/Bookings/BookingPage/BookingPage";
+import ManageBooking from "../pages/Dashboard/ManageBooking/ManageBooking";
+import MyBookings from "../pages/Dashboard/MyBookings/MyBookings";
+import AllMessages from "../pages/Dashboard/AllMessages/AllMessages";
+
+// 
 
 
 
@@ -38,6 +43,10 @@ const router = createBrowserRouter([
       {
         path: "/menu",
         element: <Menu></Menu>
+      },
+      {
+        path: "my-bookings",
+        element: <MyBookings></MyBookings>
       },
       {
         path: "/order/:category",
@@ -74,6 +83,10 @@ const router = createBrowserRouter([
         element: <Cart></Cart>
       },
       {
+        path: "my-bookings",
+        element: <MyBookings></MyBookings>
+      },
+      {
         path: 'payment',
         element: <Payment></Payment>
       },
@@ -96,6 +109,14 @@ const router = createBrowserRouter([
       {
         path: "manageItems",
         element: <AdminRoute><ManageItems></ManageItems></AdminRoute>
+      },
+      {
+        path: "managebooking",
+        element: <AdminRoute><ManageBooking></ManageBooking></AdminRoute>
+      },
+      {
+        path: "api/messages",
+        element: <AdminRoute><AllMessages></AllMessages></AdminRoute>
       },
       {
         path: "updateItem/:id",

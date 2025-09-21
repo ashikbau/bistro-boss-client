@@ -42,12 +42,13 @@ const Dashboard = () => {
                             <li><NavLink to="/dashboard/manageItems"><FaList /> Manage Items</NavLink></li>
                             <li><NavLink to="/dashboard/manageBooking"><FaBook /> Manage Booking</NavLink></li>
                             <li><NavLink to="/dashboard/users"><FaUser /> All Users</NavLink></li>
+                            <li><NavLink to="/dashboard/api/messages"><FaUser /> All Messages</NavLink></li>
                         </>
                     ) : (
                         <>
                             <li><NavLink to="/dashboard/cart"><FaShoppingCart /> My Cart ({cart.length})</NavLink></li>
                             <li><NavLink to="/dashboard/review"><FaStreetView /> Add A Review</NavLink></li>
-                            <li><NavLink to="/dashboard/bookings"><FaList /> My Bookings</NavLink></li>
+                            <li><NavLink to="/dashboard/my-bookings"><FaList /> My Bookings</NavLink></li>
                         </>
                     )}
                     <div className="divider"></div>
