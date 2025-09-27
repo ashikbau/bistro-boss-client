@@ -18,20 +18,9 @@ const Category = () => {
             <SectionTitle
             
              subHeading="From 11:00am to 10:00pm"
-                heading="ORDER ONLINE"
-            
-            >
-               
-            </SectionTitle>
-
-
-            {/* <div className='mb-10'>
-                <p className='text-center italic text-[#D99904]'>---From 11:00am to 10:00pm---</p>
-                  <div  className="divider w-80 mx-auto"></div>
-                  <h1 className='text-center font-bold'>Order Online</h1>
-                  <div className="divider  w-80 mx-auto"></div>
-            </div> */}
-            <Swiper
+                heading="ORDER ONLINE">
+               </SectionTitle>
+             <Swiper
                 slidesPerView={4}
                 spaceBetween={30}
                 centeredSlides={true}

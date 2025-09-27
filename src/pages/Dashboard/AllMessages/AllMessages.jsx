@@ -37,6 +37,25 @@ const AllMessages = () => {
             alert("Failed to send reply");
         }
     };
+
+    const handleDelete = async (id) => {
+        const confirm = window.confirm("Are you sure you want to delete this message?");
+        if (!confirm) return;
+
+        try {
+            // Call your backend delete endpoint
+            await axiosSecure.delete(`/api/messages/${id}`);
+
+            // Update messages locally
+            setMessages(prev => prev.filter(msg => msg._id !== id));
+
+            alert("Message deleted successfully!");
+        } catch (err) {
+            console.error(err);
+            alert("Failed to delete message");
+        }
+    };
+
     return (
         <div className="p-6">
             <h2 className="text-2xl font-bold mb-4">User Messages</h2>
@@ -64,6 +83,12 @@ const AllMessages = () => {
                             className="mt-2 bg-yellow-700 text-white px-4 py-2 rounded hover:bg-yellow-800"
                         >
                             Send Reply
+                        </button>
+                        <button
+                            onClick={() => handleDelete(msg._id)}
+                            className="mt-2 ml-2 bg-yellow-700 text-white px-4 py-2 rounded hover:bg-yellow-800 "
+                        >
+                            Delete Message
                         </button>
                     </div>
                 ))}

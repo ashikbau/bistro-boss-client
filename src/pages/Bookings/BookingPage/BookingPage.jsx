@@ -4,7 +4,7 @@ import BookingModal from "../BookingModal";
 import DatePickerBanner from "../DatePickerBanner";
 
 const BookingPage = () => {
-    // ✅ Declare state
+    
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [slot, setSlot] = useState(null);
 

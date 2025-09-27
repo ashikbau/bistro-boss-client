@@ -180,7 +180,7 @@ const OrderTab = ({items,category}) => {
   const [currentItems, setCurrentItems] = useState([]);
   const [swiperInstance, setSwiperInstance] = useState(null);
 //    const {category} = useParams();
- console.log("OrderTab category:", category);
+//  console.log("OrderTab category:", category);
 
 
   // ✅ Fetch total count and load first page

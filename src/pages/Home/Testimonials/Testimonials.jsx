@@ -13,16 +13,23 @@ import 'swiper/css/navigation';
 // import required modules
 import { Navigation } from 'swiper/modules';
 import { FaQuoteLeft } from "react-icons/fa";
+import useAxiosPublic from "../../../hooks/useAxiosPublic";
 
 
 
 const Testimonials = () => {
     const [reviews, setReviews] = useState([]);
+    const axiosPublic = useAxiosPublic();
+
     useEffect(() => {
-        fetch("http://localhost:5000/reviews")
-            .then(res => res.json())
-            .then(data => setReviews(data))
-    }, [])
+        axiosPublic.get("/reviews")
+            .then((response) => {
+                setReviews(response.data);
+            })
+            .catch((error) => {
+                console.error("Error fetching reviews:", error);
+            });
+    }, [axiosPublic]);
 
     return (
         <section className="my-20">
@@ -48,18 +55,10 @@ const Testimonials = () => {
 
 
                             <FaQuoteLeft className=" text-4xl font-extrabold my-10" />
-                            
-                         
-
-
-
-
-
                             <p className="py-8">{review.details}</p>
                             <h3 className="text-2xl text-orange-400">{review.name}</h3>
                         </div>
-
-                    </SwiperSlide>)
+                        </SwiperSlide>)
 
                 }
 

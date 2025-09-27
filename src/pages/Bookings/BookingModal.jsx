@@ -6,6 +6,8 @@ const BookingModal = ({ date, slot, onClose }) => {
     const [email, setEmail] = useState('');
     const [guests, setGuests] = useState(2);
     const [status, setStatus] = useState('');
+    const [phone, setPhone] = useState('');
+
     const axiosPublic = useAxiosPublic();
 
     const handleSubmit = e => {
@@ -15,7 +17,7 @@ const BookingModal = ({ date, slot, onClose }) => {
             time: slot,
             name,
             email,
-           
+            phone,
             guests
         })
             .then(() => setStatus('Reservation confirmed!'))
@@ -56,6 +58,15 @@ const BookingModal = ({ date, slot, onClose }) => {
                             onChange={e => setEmail(e.target.value)}
                             required
                         />
+                        <input
+                            type="tel"
+                            placeholder="Your Phone Number"
+                            className="border p-2 w-full"
+                            value={phone}
+                            onChange={e => setPhone(e.target.value)}
+                            required // or make optional if SMS is optional
+                        />
+
                         <input
                             type="number"
                             min={1}

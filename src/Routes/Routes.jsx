@@ -25,6 +25,9 @@ import BookingPage from "../pages/Bookings/BookingPage/BookingPage";
 import ManageBooking from "../pages/Dashboard/ManageBooking/ManageBooking";
 import MyBookings from "../pages/Dashboard/MyBookings/MyBookings";
 import AllMessages from "../pages/Dashboard/AllMessages/AllMessages";
+import AddReview from "../pages/Dashboard/AddReview/AddReview";
+import ManageReviews from "../pages/Dashboard/ManageReviews/ManageReviews";
+
 
 // 
 
@@ -89,6 +92,14 @@ const router = createBrowserRouter([
       {
         path: 'payment',
         element: <Payment></Payment>
+      },
+      {
+        path: 'addReview',
+        element: <AddReview></AddReview>
+      },
+      {
+        path: 'myReviews',
+        element: <ManageReviews></ManageReviews>
       },
       {
         path: 'paymentHistory',

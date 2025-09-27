@@ -7,6 +7,7 @@ import { NavLink, Outlet } from "react-router-dom";
 import useCart from "../hooks/useCart";
 import useAdmin from "../hooks/useAdmin";
 import { useState } from "react";
+import NavBar from "../pages/Shared/NavBar/NavBar";
 
 const Dashboard = () => {
     const [cart] = useCart();
@@ -15,6 +16,7 @@ const Dashboard = () => {
 
     return (
         <div className="min-h-screen flex flex-col md:flex-row">
+          
             {/* Mobile top bar */}
             <div className="flex items-center justify-between bg-yellow-300 md:hidden px-4 py-2">
                 <h1 className="font-bold text-lg">Dashboard</h1>
@@ -47,7 +49,8 @@ const Dashboard = () => {
                     ) : (
                         <>
                             <li><NavLink to="/dashboard/cart"><FaShoppingCart /> My Cart ({cart.length})</NavLink></li>
-                            <li><NavLink to="/dashboard/review"><FaStreetView /> Add A Review</NavLink></li>
+                            <li><NavLink to="/dashboard/addReview"><FaStreetView /> Add A Review</NavLink></li>
+                            <li><NavLink to="/dashboard/myReviews"><FaBars /> Manage Reviews</NavLink></li>
                             <li><NavLink to="/dashboard/my-bookings"><FaList /> My Bookings</NavLink></li>
                         </>
                     )}
