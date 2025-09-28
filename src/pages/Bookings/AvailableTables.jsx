@@ -13,7 +13,7 @@ const AvailableTables = ({ selectedDate, onSelectSlot }) => {
 
     return (
         <div className="bg-white p-4 rounded shadow">
-            <h2 className="text-lg font-semibold mb-3">
+            <h2 className="text-lg text-center font-semibold mb-3">
                 Available Times for {selectedDate.toDateString()}
             </h2>
             <div className="grid grid-cols-3 gap-3">
