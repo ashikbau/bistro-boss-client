@@ -26,6 +26,7 @@ import MyBookings from "../pages/Dashboard/MyBookings/MyBookings";
 import AllMessages from "../pages/Dashboard/AllMessages/AllMessages";
 import AddReview from "../pages/Dashboard/AddReview/AddReview";
 import ManageReviews from "../pages/Dashboard/ManageReviews/ManageReviews";
+import UserHome from "../pages/Dashboard/UserHome/UserHome";
 
 
 // 
@@ -104,6 +105,10 @@ const router = createBrowserRouter([
       {
         path: "adminHome",
         element: <AdminHome></AdminHome>
+      },
+      {
+        path: "userHome",
+        element: <UserHome></UserHome>
       },
       {
         path: "users",

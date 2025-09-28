@@ -15,8 +15,8 @@ const Dashboard = () => {
     const [open, setOpen] = useState(false); // sidebar toggle
 
     return (
-        <div className="min-h-screen flex flex-col md:flex-row">
-          
+        <div className="h-screen flex flex-col md:flex-row">
+
             {/* Mobile top bar */}
             <div className="flex items-center justify-between bg-yellow-300 md:hidden px-4 py-2">
                 <h1 className="font-bold text-lg">Dashboard</h1>
@@ -52,12 +52,16 @@ const Dashboard = () => {
                             <li><NavLink to="/dashboard/addReview"><FaStreetView /> Add A Review</NavLink></li>
                             <li><NavLink to="/dashboard/myReviews"><FaBars /> Manage Reviews</NavLink></li>
                             <li><NavLink to="/dashboard/my-bookings"><FaList /> My Bookings</NavLink></li>
+                            <li><NavLink to="/dashboard/userHome"><FaHome /> User Home</NavLink></li>
+
                         </>
                     )}
+
                     <div className="divider"></div>
                     <li><NavLink to="/"><FaHome /> Home</NavLink></li>
                     <li><NavLink to="/order/salad"><BiFoodMenu size={20} /> Menu</NavLink></li>
                     <li><NavLink to="/order/salad"><FaBook /> Contact</NavLink></li>
+                    <li><NavLink to="/book"><FaBook /> Booking</NavLink></li>  {/* New Booking Nav */}
                 </ul>
             </aside>
 
