@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { AuthContex } from "../../../provider/AuthProvider";
 import Swal from 'sweetalert2';
@@ -11,6 +11,10 @@ const NavBar = () => {
   const { user, logOutUser } = useContext(AuthContex);
   const [cart] = useCart();
   const navigate = useNavigate();
+  const [isMounted, setIsMounted] = useState(false);
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const handleLogOut = () => {
     logOutUser()
@@ -53,7 +57,7 @@ const NavBar = () => {
       <li>
         <NavLink to="/dashboard/cart" className="block px-4 py-2">
           <button className="btn">
-            <FaShoppingCart className="mr-2" />
+            {isMounted && <FaShoppingCart className="mr-2" />}
             <div className="badge badge-secondary">+{cart.length}</div>
           </button>
         </NavLink>
@@ -68,7 +72,8 @@ const NavBar = () => {
               title={user.displayName || "User"}
             />
           ) : (
-            <FaUserCircle className="text-3xl" title={user.displayName || "User"} />
+            isMounted && <FaUserCircle className="text-3xl" title={user.displayName || "User"} />
+
           )}
           <button onClick={handleLogOut} className="btn btn-ghost">SignOut</button>
         </div>
