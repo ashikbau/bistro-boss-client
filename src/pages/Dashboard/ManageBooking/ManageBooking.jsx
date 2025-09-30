@@ -140,39 +140,41 @@ export default function ManageBooking() {
                             </td>
 
                             {/* Actions */}
-                            <td className="border p-2 space-x-2">
+                            <td className="border p-2">
                                 {editingBooking?._id === b._id ? (
-                                    <>
+                                    <div className="flex flex-wrap gap-2 justify-center">
                                         <button
                                             onClick={handleSave}
-                                            className="bg-green-500 text-white px-2 py-1 rounded"
+                                            className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded w-24 text-sm"
                                         >
                                             Save
                                         </button>
                                         <button
                                             onClick={() => setEditingBooking(null)}
-                                            className="bg-gray-400 text-white px-2 py-1 rounded"
+                                            className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded w-24 text-sm"
                                         >
                                             Cancel
                                         </button>
-                                    </>
+                                    </div>
                                 ) : (
-                                    <>
+                                    <div className="flex flex-wrap gap-2 justify-center">
                                         <button
                                             onClick={() => handleEdit(b)}
-                                            className="bg-blue-500 text-white px-2 py-1 rounded"
+                                            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded w-24 text-sm"
                                         >
                                             Edit
                                         </button>
                                         <button
                                             onClick={() => handleDelete(b._id)}
-                                            className="bg-red-500 text-white px-2 py-1 rounded"
+                                            className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded w-24 text-sm"
                                         >
                                             Delete
                                         </button>
-                                    </>
+                                    </div>
                                 )}
                             </td>
+
+
                         </tr>
                     ))}
                 </tbody>

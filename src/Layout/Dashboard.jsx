@@ -30,13 +30,13 @@ const Dashboard = () => {
                 className={`
     bg-yellow-300 w-64 p-4 space-y-2
     absolute md:relative
-    h-screen               /* 🔑 Full height on all screens */
+    h-screen               
     transform md:translate-x-0
     ${open ? "translate-x-0" : "-translate-x-full"}
     transition-transform duration-300 ease-in-out
   `}
             >
-                <ul className="menu">
+                <ul className="menu font-bold">
                     {isAdmin ? (
                         <>
                             <li><NavLink to="/dashboard/adminHome"><FaHome /> Admin Home</NavLink></li>
