@@ -1,254 +1,110 @@
-// import FoodCard from "../../../components/FoodCard/FoodCard";
-
-// // Import Swiper React components
-// import { Swiper, SwiperSlide } from 'swiper/react';
-// // Import Swiper styles
-// import 'swiper/css';
-// import 'swiper/css/pagination';
-// // import required modules
-// import { Pagination } from 'swiper/modules';
 
 
-// const OrderTab = ({items}) => {
-//     const pagination = {
-//     clickable: true,
-//     renderBullet: function (index, className) {
-//       return '<span class="' + className + '">' + (index + 1) + '</span>';
-//     },
-//   };
-//     return (
-//         // <div className='grid md:grid-cols-3 gap-10'>
-//         //     {items.map(item => <FoodCard
-//         //         key={item._id}
-//         //         item={item}
-//         //     ></FoodCard>)}
-//         // </div>
-//         <Swiper
-//         pagination={pagination}
-//         modules={[Pagination]}
-//         className="mySwiper"
-//       >
-//         <SwiperSlide>
-//             <div className='grid md:grid-cols-3 gap-10'>
-//                 {
-//               items.map(item=><FoodCard
-//               key={item._id}
-//               item={item}
-              
-//               ></FoodCard>)  
-//             }
-//             </div>
-//         </SwiperSlide>
-       
-//       </Swiper>
-//     );
-// };
-
-// // export default OrderTab;
-// import FoodCard from "../../../components/FoodCard/FoodCard";
-// import { Swiper, SwiperSlide } from 'swiper/react';
-// import 'swiper/css';
-// import 'swiper/css/pagination';
-// import 'swiper/css/navigation'; // 👈 Add navigation styles
-// import { Pagination, Navigation, Autoplay } from 'swiper/modules'; // 👈 Add modules
-
-// // Utility to chunk items into pages
-// const chunkArray = (arr, chunkSize) => {
-//   const chunks = [];
-//   for (let i = 0; i < arr.length; i += chunkSize) {
-//     chunks.push(arr.slice(i, i + chunkSize));
-//   }
-//   return chunks;
-// };
-
-// const OrderTab = ({ items }) => {
-//   const chunkedItems = chunkArray(items, 6);
-
-//   return (
-//     <Swiper
-//       pagination={{
-//         clickable: true,
-//         renderBullet: (index, className) => `<span class="${className}">${index + 1}</span>`,
-//       }}
-//       navigation={true} // 👈 Enable navigation arrows
-//       autoplay={{
-//         delay: 5000, // 👈 Change this value for different speed
-//         disableOnInteraction: false,
-//       }}
-//       modules={[Pagination, Navigation, Autoplay]} // 👈 Include modules
-//       className="mySwiper"
-//     >
-//       {chunkedItems.map((group, idx) => (
-//         <SwiperSlide key={idx}>
-//           <div className="grid md:grid-cols-3 gap-10">
-//             {group.map(item => (
-//               <FoodCard key={item._id} item={item} />
-//             ))}
-//           </div>
-//         </SwiperSlide>
-//       ))}
-//     </Swiper>
-//   );
-// };
-
-// export default OrderTab;
-// import { useState, useEffect } from "react";
-// import FoodCard from "../../../components/FoodCard/FoodCard";
-// import { Swiper, SwiperSlide } from "swiper/react";
-// import { Pagination } from "swiper/modules";
-
-// import "swiper/css";
-// import "swiper/css/pagination";
-
-// const ITEMS_PER_PAGE = 6;
-
-// const OrderTab = ({items}) => {
-//   const [pageCount, setPageCount] = useState(0);
-//   const [currentItems, setCurrentItems] = useState([]);
-//   const [swiperInstance, setSwiperInstance] = useState(null);
-
-//   // Fetch total count on mount
-//   useEffect(() => {
-//     const fetchTotalCount = async () => {
-//       const res = await fetch("http://localhost:5000/menu/count");
-//       const data = await res.json(); // { total: 42 }
-//       setPageCount(Math.ceil(data.total / ITEMS_PER_PAGE));
-//     };
-//     fetchTotalCount();
-//   }, []);
-
-//   // Fetch data for a specific page
-//   const fetchPageData = async (page) => {
-//     const res = await fetch(`http://localhost:5000/menu?page=${page}&limit=${ITEMS_PER_PAGE}`);
-//     const data = await res.json(); // { items: [...] }
-//     setCurrentItems(data.items);
-//   };
-
-//   // When Swiper is ready or slide changes
-//   const handleSlideChange = (swiper) => {
-//     const newPage = swiper.activeIndex + 1;
-//     fetchPageData(newPage);
-//   };
-
-//   return (
-//     <div className="space-y-6">
-//       <Swiper
-//         onSwiper={setSwiperInstance}
-//         onSlideChange={handleSlideChange}
-//         pagination={{
-//           clickable: true,
-//           renderBullet: (index, className) =>
-//             `<span class="${className}">${index + 1}</span>`,
-//         }}
-//         modules={[Pagination]}
-//         className="mySwiper"
-//       >
-//         {/* Only one slide is used to display fetched data */}
-//         {[...Array(pageCount).keys()].map((_, idx) => (
-//           <SwiperSlide key={idx}>
-//             <div className="grid md:grid-cols-3 gap-10">
-//               {currentItems.map((item) => (
-//                 <FoodCard key={item._id} item={item} />
-//               ))}
-//             </div>
-//           </SwiperSlide>
-//         ))}
-//       </Swiper>
-//     </div>
-//   );
-// };
-
-// export default OrderTab;
 import { useState, useEffect } from "react";
-import FoodCard from "../../../components/FoodCard/FoodCard";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Pagination } from "swiper/modules";
-
-
-
+import { Pagination, Navigation } from "swiper/modules";
+import './OrderTab.css'
 
 import "swiper/css";
 import "swiper/css/pagination";
+import "swiper/css/navigation";
 
+import FoodCard from "../../../components/FoodCard/FoodCard";
+import useAxiosPublic from "../../../hooks/useAxiosPublic";
 
 const ITEMS_PER_PAGE = 6;
 
-
-const OrderTab = ({items,category}) => {
+const OrderTab = ({ category }) => {
+  const axiosPublic = useAxiosPublic();
 
   const [pageCount, setPageCount] = useState(0);
-  const [currentItems, setCurrentItems] = useState([]);
-  const [swiperInstance, setSwiperInstance] = useState(null);
-//    const {category} = useParams();
-//  console.log("OrderTab category:", category);
+  const [pagesData, setPagesData] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
 
-
-  // ✅ Fetch total count and load first page
+  // Fetch total count and preload first page
   useEffect(() => {
-    const fetchTotalCountAndFirstPage = async () => {
+    const fetchTotalCount = async () => {
       try {
-        const res = await fetch(`http://localhost:5000/menu/count?category=${category}`);
-        const data = await res.json(); // { total: number }
-
-        const totalPages = Math.ceil(data.total / ITEMS_PER_PAGE);
+        setIsLoading(true);
+        const res = await axiosPublic.get(`/menu/count?category=${category}`);
+        const total = res.data.total || 0;
+        const totalPages = Math.ceil(total / ITEMS_PER_PAGE);
         setPageCount(totalPages);
-
-        // ✅ Load first page initially
-        fetchPageData(1);
+        setPagesData({}); // reset cache
+        await fetchPageData(1); // preload first page
       } catch (err) {
-        console.error("Error fetching total count:", err);
+        console.error("Error fetching count:", err);
+      } finally {
+        setIsLoading(false);
       }
     };
 
-    fetchTotalCountAndFirstPage();
-  }, [category]);
+    if (category) fetchTotalCount();
+  }, [category, axiosPublic]);
 
-  // ✅ Fetch items for the given page
+  // Fetch and cache specific page
   const fetchPageData = async (page) => {
+    if (pagesData[page]) return; // already cached
     try {
-      const res = await fetch(
-         `http://localhost:5000/menu?page=${page}&limit=${ITEMS_PER_PAGE}&category=${category}`
+      const res = await axiosPublic.get(
+        `/menu?page=${page}&limit=${ITEMS_PER_PAGE}&category=${category}`
       );
-      const data = await res.json();
-      setCurrentItems(data.items || []);
+      const items = res.data.items || [];
+      setPagesData((prev) => ({
+        ...prev,
+        [page]: items,
+      }));
     } catch (err) {
-      console.error("Error fetching page data:", err);
+      console.error("Error fetching items:", err);
     }
   };
 
-  // ✅ Handle slide change and load data dynamically
   const handleSlideChange = (swiper) => {
-    const newPage = swiper.activeIndex + 1;
-    fetchPageData(newPage);
+    const nextPage = swiper.activeIndex + 1;
+    fetchPageData(nextPage);
   };
 
   return (
-    <div className="space-y-24 ">
-      <Swiper
-        onSwiper={setSwiperInstance}
-        onSlideChange={handleSlideChange}
-        pagination={{
-          clickable: true,
-          renderBullet: (index, className) =>
-            `<span  class="${className}">${index + 1}</span>`,
-        }}
-        modules={[Pagination]}
-        className="mySwiper"
-      >
-        {[...Array(pageCount).keys()].map((_, idx) => (
-          <SwiperSlide key={idx}>
-            <div className="grid md:grid-cols-3 gap-10">
-              {currentItems.map((item) => (
-                <FoodCard key={item._id} item={item} />
-              ))}
-            </div>
-          </SwiperSlide>
-        ))}
-      </Swiper>
+    <div className="space-y-6">
+      {isLoading ? (
+        <div className="text-center py-10 text-gray-500">Loading...</div>
+      ) : (
+        <Swiper
+          onSlideChange={handleSlideChange}
+          pagination={{
+            clickable: true,
+            renderBullet: (index, className) =>
+              `<span class="${className} custom-bullet">${index + 1}</span>`,
+          }}
+          navigation
+          modules={[Pagination, Navigation]}
+          className="mySwiper custom-swiper"
+        >
+
+          {[...Array(pageCount).keys()].map((_, idx) => {
+            const page = idx + 1;
+            const items = pagesData[page] || [];
+
+            return (
+              <SwiperSlide key={page}>
+                <div className="grid md:grid-cols-3 gap-10">
+                  {items.length > 0 ? (
+                    items.map((item) => (
+                      <FoodCard key={item._id} item={item} />
+                    ))
+                  ) : (
+                    <p className="col-span-3 text-center text-gray-400">
+                      Loading page {page}...
+                    </p>
+                  )}
+                </div>
+              </SwiperSlide>
+            );
+          })}
+        </Swiper>
+      )}
     </div>
   );
 };
 
 export default OrderTab;
-
-

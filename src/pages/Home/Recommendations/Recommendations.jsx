@@ -8,7 +8,7 @@ const Recommendations = () => {
     const [RecommendedItems, setRecommendedItems] = useState([]);
     const axiosPublic = useAxiosPublic();
     useEffect(() => {
-        axiosPublic.get("/menu") // assuming the file is in the public folder
+        axiosPublic.get("/menu") 
             .then((response) => {
                 const recommendedMenu = response.data.filter(item => item.category === "salad");
                 setRecommendedItems(recommendedMenu);

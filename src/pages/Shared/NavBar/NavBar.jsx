@@ -40,11 +40,13 @@ const NavBar = () => {
   };
 
   const navLinkStyle = ({ isActive }) =>
-    `block px-4 py-2 rounded transition 
+    `block px-4 py-2 rounded font-bold transition duration-200
    ${isActive
-      ? 'lg:text-white lg:bg-gray-700 text-black bg-gray-200'
-      : 'lg:text-white lg:hover:bg-gray-700 text-black hover:bg-gray-100'
+      ? 'bg-white text-black' // Active: high contrast
+      : 'text-gray-300 hover:text-white hover:bg-gray-700'
     }`;
+
+
 
 
   const navOptions = (

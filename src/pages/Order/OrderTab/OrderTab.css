@@ -1,0 +1,36 @@
+/* OrderTab.css */
+
+.custom-bullet {
+    background: #f3f4f6;
+    /* Tailwind gray-100 */
+    color: #000000;
+    /* Black text */
+    font-size: 16px;
+    /* Bigger text */
+    font-weight: 700;
+    /* Bold text */
+    padding: 8px 12px;
+    margin: 0 6px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    display: inline-block;
+}
+
+.custom-bullet:hover {
+    background-color: #e5e7eb;
+    /* Tailwind gray-200 */
+}
+
+.swiper-pagination-bullet-active.custom-bullet {
+    background-color: #1d4ed8;
+    /* Tailwind blue-700 */
+    color: white;
+    font-weight: 800;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.25);
+}
+
+.custom-swiper .swiper-pagination {
+    text-align: center;
+    margin-top: 24px;
+}

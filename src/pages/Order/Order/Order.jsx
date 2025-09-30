@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
@@ -8,21 +8,38 @@ import OrderCoverImg from '../../../assets/shop/banner2.jpg';
 import Cover from '../../Shared/Cover/Cover';
 import OrderTab from '../OrderTab/OrderTab';
 
+const categories = ['salad', 'pizza', 'soup', 'dessert', 'drinks'];
+
 const Order = () => {
-  const categories = ['salad', 'pizza', 'soup', 'dessert', 'drinks'];
   const { category } = useParams();
+  const navigate = useNavigate();
+
   const initialIndex = categories.indexOf(category);
   const [tabIndex, setTabIndex] = useState(initialIndex === -1 ? 0 : initialIndex);
+
+  // 🔁 Sync tabIndex if route param changes
+  useEffect(() => {
+    if (initialIndex !== -1 && initialIndex !== tabIndex) {
+      setTabIndex(initialIndex);
+    }
+  }, [category]);
+
+  // 🔁 Change URL when tab changes
+  const handleTabSelect = (index) => {
+    setTabIndex(index);
+    navigate(`/order/${categories[index]}`);
+  };
 
   return (
     <div className='mt-8'>
       <Helmet>
         <title>Bistro Boss | Order Food</title>
       </Helmet>
+
       <Cover img={OrderCoverImg} title="Order Food" />
 
-      <Tabs defaultIndex={tabIndex} onSelect={(index) => setTabIndex(index)}>
-        <TabList>
+      <Tabs selectedIndex={tabIndex} onSelect={handleTabSelect}>
+        <TabList >
           <Tab>Salad</Tab>
           <Tab>Pizza</Tab>
           <Tab>Soup</Tab>
