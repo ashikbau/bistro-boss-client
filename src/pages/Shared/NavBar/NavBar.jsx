@@ -86,7 +86,7 @@ const NavBar = () => {
   );
 
   return (
-    <>
+     <>
       <div className="navbar fixed z-10 bg-[#151515] text-neutral-content max-w-screen-lg w-full">
         <div className="navbar-start">
           <div className="dropdown">
@@ -116,5 +116,6 @@ const NavBar = () => {
 };
 
 export default NavBar;
+
 
 
