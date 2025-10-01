@@ -17,6 +17,7 @@ const UserHome = () => {
     useEffect(() => {
         axiosSecure.get("/user-stats") // 🔧 Replace with your real endpoint
             .then((res) => {
+                console.log("User Stats Response:", res.data); // 👈s
                 setUserStats(res.data);
             })
             .catch((err) => {
@@ -52,12 +53,15 @@ const UserHome = () => {
                 <Link to="/dashboard/addReview" className="btn btn-primary">➕ Add a Review</Link>
                 <Link to="/dashboard/myReviews" className="btn btn-secondary">📋 Manage Reviews</Link>
                 <Link to="/dashboard/my-bookings" className="btn btn-accent">📅 Manage Bookings</Link>
-                
+                <Link to="/book" className="btn btn-outline btn-primary hover:bg-primary hover:text-white">
+                    ✉️ Booking
+                </Link>
+
 
                 <Link to="/" className="btn btn-outline">🏠 Home</Link>
                 <Link to="/menu" className="btn btn-outline">📖 Menu</Link>
                 <Link to="/contact" className="btn btn-outline">✉️ Contact</Link>
-                <Link to="/book" className="btn btn-outline">✉️ Booking</Link>
+
             </div>
         </div>
     );
