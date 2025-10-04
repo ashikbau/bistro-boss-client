@@ -87,7 +87,7 @@ const router = createBrowserRouter([
         element: <MyBookings></MyBookings>
       },
       {
-        path: 'payment',
+        path: 'orders',
         element: <Payment></Payment>
       },
       {

@@ -86,10 +86,10 @@ const CheckoutForm = () => {
       };
 
       try {
-        const res = await axiosSecure.post('/payments', payment);
+        const res = await axiosSecure.post('/orders', payment);
         refetch();
 
-        if (res.data?.paymentResult?.insertedId) {
+        if (res.data?.orderResult?.insertedId) {
           Swal.fire({
             position: "top-end",
             icon: "success",
