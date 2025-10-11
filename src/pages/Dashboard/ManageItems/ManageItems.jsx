@@ -5,11 +5,13 @@ import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import { Link } from "react-router-dom";
 import useMenu from "../../../hooks/useMenu";
 import Swal from "sweetalert2";
+import useRole from "../../../hooks/useRole";
 
 
 const ManageItems = () => {
     const [menu, loading, refetch] = useMenu();
     const axiosSecure = useAxiosSecure();
+    const { isAdmin } = useRole();
 
     const handleDeleteItem = (item) => {
         Swal.fire({
@@ -47,15 +49,15 @@ const ManageItems = () => {
         const newStatus = !currentStatus;
         console.log("Toggling featured:", id, "to", newStatus); // ✅ DEBUG LINE
         axiosSecure.patch(`/menu/feature/${id}`, { featured: newStatus })
-        .then(res => {
-                 console.log("PATCH response:", res.data); // ✅ DEBUG LINE
+            .then(res => {
+                console.log("PATCH response:", res.data); // ✅ DEBUG LINE
                 if (res.data.modifiedCount > 0) {
                     refetch(); // If you're using react-query or SWR
                     Swal.fire('Updated!', `Item is now ${newStatus ? 'Featured' : 'Not Featured'}`, 'success');
                 }
             })
             .catch(err => {
-                 console.error("Error in toggleFeatured:", err);
+                console.error("Error in toggleFeatured:", err);
                 Swal.fire('Error', 'Could not update featured status', 'error');
             });
     };
@@ -79,7 +81,7 @@ const ManageItems = () => {
                                 <th>Price</th>
                                 <th>Update</th>
                                 <th>Delete</th>
-                                <th>Featured</th> 
+                                <th>Featured</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -101,30 +103,36 @@ const ManageItems = () => {
                                         {item.name}
                                     </td>
                                     <td className="text-right">${item.price}</td>
-                                    <td>
-                                        <Link to={`/dashboard/updateItem/${item._id}`}>
-                                            <button
-                                                className="btn btn-ghost btn-lg bg-orange-500">
-                                                <FaEdit className="text-white 
-                                        "></FaEdit>
-                                            </button>
-                                        </Link>
-                                    </td>
-                                    <td>
-                                        <button
-                                            onClick={() => handleDeleteItem(item)}
-                                            className="btn btn-ghost btn-lg">
-                                            <FaTrashAlt className="text-red-600"></FaTrashAlt>
-                                        </button>
-                                    </td>
-                                    <td>
-                                        <button
-                                            onClick={() => handleToggleFeatured(item._id, item.featured)}
-                                            className={`btn btn-xs ${item.featured ? 'btn-success' : 'btn-outline'}`}
-                                        >
-                                            {item.featured ? 'Featured' : 'Not Featured'}
-                                        </button>
-                                    </td>
+                                    {isAdmin && (
+                                        <>
+                                            <td>
+                                                <Link to={`/dashboard/updateItem/${item._id}`}>
+                                                    <button className="btn btn-ghost btn-lg bg-orange-500">
+                                                        <FaEdit className="text-white" />
+                                                    </button>
+                                                </Link>
+                                            </td>
+
+                                            <td>
+                                                <button
+                                                    onClick={() => handleDeleteItem(item)}
+                                                    className="btn btn-ghost btn-lg"
+                                                >
+                                                    <FaTrashAlt className="text-red-600" />
+                                                </button>
+                                            </td>
+
+                                            <td>
+                                                <button
+                                                    onClick={() => handleToggleFeatured(item._id, item.featured)}
+                                                    className={`btn btn-xs ${item.featured ? "btn-success" : "btn-outline"}`}
+                                                >
+                                                    {item.featured ? "Featured" : "Not Featured"}
+                                                </button>
+                                            </td>
+                                        </>
+                                    )}
+
                                 </tr>)
                             }
                         </tbody>

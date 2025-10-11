@@ -178,7 +178,7 @@ const Cart = () => {
                             Admins cannot order
                         </button>
                     ) : cart.length ? (
-                        <Link to="/dashboard/payment">
+                        <Link to="/dashboard/orders">
                             <button className="btn btn-primary">Pay</button>
                         </Link>
                     ) : (

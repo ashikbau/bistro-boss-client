@@ -14,8 +14,8 @@ const Login = () => {
   const [disabled, setDisabled] = useState(true);
   const { loginUser, logInWithGoogle, logInWithFacebook, logInWithGitHub } = useContext(AuthContex);
   const navigate = useNavigate();
-  const location = useLocation();
-  const from = location.state?.from?.pathname || "/";
+  // const location = useLocation();
+  // const from = location.state?.from?.pathname || "/";
   const axiosPublic = useAxiosPublic();
 
   useEffect(() => {
@@ -32,21 +32,39 @@ const Login = () => {
   };
 
   // 🔐 Shared function: Check user role and redirect
-  const handleRoleRedirect = (email) => {
-    axiosPublic.get(`/users/${email}`)
-      .then(res => {
-        const role = res.data?.role;
-        if (role === 'admin') {
-          navigate('/dashboard/adminHome', { replace: true });
-        } else {
-          navigate('/dashboard/userHome', { replace: true });
-        }
-      })
-      .catch(err => {
-        console.error('Error fetching user role:', err);
-        navigate('/dashboard/userHome', { replace: true }); // Fallback
-      });
+  // const handleRoleRedirect = (email) => {
+  //   axiosPublic.get(`/users/${email}`)
+  //     .then(res => {
+  //       const role = res.data?.role;
+  //       if (role === 'admin') {
+  //         navigate('/dashboard/adminHome', { replace: true });
+  //       } else  {
+  //         navigate('/dashboard/userHome', { replace: true });
+  //       }
+  //     })
+  //     .catch(err => {
+  //       console.error('Error fetching user role:', err);
+  //       navigate('/dashboard/userHome', { replace: true }); // Fallback
+  //     });
+  // };
+  const handleRoleRedirect = async (email) => {
+    try {
+      const res = await axiosPublic.get(`/users/${email}`);
+      const role = res.data?.role;
+
+      if (role === 'admin') {
+        navigate('/dashboard/adminHome', { replace: true });
+      } else if (role === 'staff') {
+        navigate('/dashboard/staffHome', { replace: true });
+      } else {
+        navigate('/dashboard/userHome', { replace: true });
+      }
+    } catch (err) {
+      console.error('Error fetching user role:', err);
+      navigate('/dashboard/userHome', { replace: true });
+    }
   };
+
 
   const handleLogin = (event) => {
     event.preventDefault();
@@ -76,7 +94,10 @@ const Login = () => {
       .then(result => {
         const userInfo = {
           name: result.user?.displayName,
-          email: result.user?.email
+          email: result.user?.email,
+          role: "user"
+         
+
         };
 
         axiosPublic.post("/users", userInfo) // You may want to use upsert logic here
@@ -226,3 +247,4 @@ const Login = () => {
 };
 
 export default Login;
+

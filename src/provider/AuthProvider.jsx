@@ -56,31 +56,41 @@ const AuthProvider = ({children}) => {
       setLoading(true);
       return signOut(auth);
     }
-    useEffect(()=>{
-      const unsubscribe = onAuthStateChanged(auth,currentUser=>{
-        setUser(currentUser);
-        if (currentUser){
-          const userInfo = {email: currentUser.email}
-          axiosPublic.post('/jwt',userInfo)
-          .then(res=>{
-            if(res.data.token){
-              localStorage.setItem('access-token',res.data.token)
+
+    
+    useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, currentUser => {
+      setUser(currentUser);
+      setLoading(true);
+
+      if (currentUser) {
+        const userInfo = { email: currentUser.email };
+        axiosPublic.post('/jwt', userInfo)
+          .then(res => {
+            if (res.data.token) {
+              localStorage.setItem('access-token', res.data.token);
+            }
+            if (res.data.role) {
+              // save role in local state
+              setUser(prev => ({ ...prev, role: res.data.role }));
+              // optionally save in localStorage
+              localStorage.setItem('role', res.data.role);
             }
           })
-
-        }else{
-          localStorage.removeItem('access-token')
-
-        }
+          .catch(err => {
+            console.error("JWT error:", err);
+          })
+          .finally(() => setLoading(false));
+      } else {
+        localStorage.removeItem('access-token');
+        localStorage.removeItem('role');
         setLoading(false);
-        // console.log("current user",currentUser)
-      
+      }
     });
-    return ()=>{
-      return unsubscribe();
-    }
 
-    },[axiosPublic])
+    return () => unsubscribe();
+  }, [axiosPublic]);
+    
 
     const authInfo = {
         user,
