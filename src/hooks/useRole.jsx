@@ -1,35 +1,100 @@
-import { useEffect, useState, useContext } from "react";
+// import { useEffect, useState, useContext } from "react";
+// import useAuth from "./useAuth";
+// import useAxiosPublic from "./useAxiosPublic";
+
+// const useRole = () => {
+//   const { user, loading: authLoading } = useAuth(); // from AuthProvider
+//   const axiosPublic = useAxiosPublic();
+
+//   const [role, setRole] = useState(null); // 'admin' | 'staff' | 'user' | null
+//   const [loading, setLoading] = useState(true);
+
+//   useEffect(() => {
+//     if (!user?.email) {
+//       setRole(null);
+//       setLoading(false);
+//       return;
+//     }
+
+//     setLoading(true);
+//     axiosPublic
+//       .get(`/users/${user.email}`)
+//       .then(res => {
+//         setRole(res.data.role || "user"); // default to 'user' if backend missing
+//       })
+//       .catch(err => {
+//         console.error("Error fetching user role:", err);
+//         setRole(null);
+//       })
+//       .finally(() => setLoading(false));
+//   }, [user, axiosPublic]);
+
+//   // convenience booleans
+//   const isAdmin = role === "admin";
+//   const isStaff = role === "staff";
+//   const isUser = role === "user";
+
+//   return { role, isAdmin, isStaff, isUser, loading };
+// };
+
+// export default useRole;
+import { useEffect, useState } from "react";
 import useAuth from "./useAuth";
 import useAxiosPublic from "./useAxiosPublic";
 
+/**
+ * Custom hook: useRole()
+ * ----------------------------------
+ * Fetches the logged-in user's role from the backend.
+ * Returns: { role, isAdmin, isStaff, isUser, loading }
+ */
 const useRole = () => {
-  const { user, loading: authLoading } = useAuth(); // from AuthProvider
+  const { user, loading: authLoading } = useAuth(); // from your AuthProvider
   const axiosPublic = useAxiosPublic();
 
-  const [role, setRole] = useState(null); // 'admin' | 'staff' | 'user' | null
+  const [role, setRole] = useState(null); // can be 'admin' | 'staff' | 'user' | null
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let isMounted = true; // prevent memory leaks on unmount
+
+    // If user isn't logged in, reset role and stop loading
     if (!user?.email) {
       setRole(null);
       setLoading(false);
       return;
     }
 
+    // Wait until auth is fully loaded before fetching role
+    if (authLoading) return;
+
     setLoading(true);
+
     axiosPublic
       .get(`/users/${user.email}`)
       .then(res => {
-        setRole(res.data.role || "user"); // default to 'user' if backend missing
+        if (isMounted) {
+          // Use 'user' as fallback if role not defined in backend
+          setRole(res.data.role || "user");
+        }
       })
       .catch(err => {
         console.error("Error fetching user role:", err);
-        setRole(null);
+        if (isMounted) {
+          setRole(null);
+        }
       })
-      .finally(() => setLoading(false));
-  }, [user, axiosPublic]);
+      .finally(() => {
+        if (isMounted) setLoading(false);
+      });
 
-  // convenience booleans
+    // Cleanup function
+    return () => {
+      isMounted = false;
+    };
+  }, [user, authLoading, axiosPublic]);
+
+  // convenience flags
   const isAdmin = role === "admin";
   const isStaff = role === "staff";
   const isUser = role === "user";
@@ -38,3 +103,4 @@ const useRole = () => {
 };
 
 export default useRole;
+
