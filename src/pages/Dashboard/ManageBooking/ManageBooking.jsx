@@ -1,6 +1,5 @@
 
 import { useEffect, useState } from "react";
-import axios from "axios";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 
 export default function ManageBooking() {

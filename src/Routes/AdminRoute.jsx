@@ -12,7 +12,7 @@ const AdminRoute = ({ children }) => {
     }
 
     if (user && isAdmin) {
-        // ✅ Render children if passed directly OR Outlet for nested routes
+        //  Render children if passed directly OR Outlet for nested routes
         return children ? children : <Outlet />;
     }
 

@@ -19,7 +19,7 @@ import ManageItems from "../pages/Dashboard/ManageItems/ManageItems";
 import UpdateItem from "../pages/Dashboard/UpdateItem/UpdateItem";
 import AdminRoute from "./AdminRoute";
 import AdminHome from "../pages/Dashboard/AdminHome/AdminHome";
-import Payment from "../pages/Dashboard/Payment/Payment";
+
 import PaymentHistory from "../pages/Dashboard/PaymentHistory/PaymentHistory";
 import BookingPage from "../pages/Bookings/BookingPage/BookingPage";
 import ManageBooking from "../pages/Dashboard/ManageBooking/ManageBooking";
@@ -31,16 +31,16 @@ import UserHome from "../pages/Dashboard/UserHome/UserHome";
 import UserRoute from "./UserRoute"; // ✅ import this
 import StaffHome from "../pages/Dashboard/StaffHome/StaffHome";
 import StaffRoute from "./StaffRoute/StaffRoute";
-import HandleBookings from "../pages/Dashboard/StaffHome/HandleBookings";
+// import HandleBookings from "../pages/Dashboard/StaffHome/HandleBookings";
 import PlaceOrders from "../pages/Dashboard/StaffHome/PlaceOrders";
 import StaffMenu from "../pages/Menu/StaffMenu";
-// import StaffRoute from "./StaffRoute/StaffRoute";
-// import StaffHome from "../pages/Dashboard/StaffHome/StaffHome";
-// import HandleBookings from "../pages/StaffDashboarddd/HandleBookingsss";
-// import PlaceOrders from "../pages/StaffDashboarddd/PlaceOrdersss";
-// import StaffHome from "../pages/Dashboard/StaffHome/StaffHome";
-// import HandleBookings from "../pages/StaffDashboard/HandleBookings";
-// import PlaceOrders from "../pages/StaffDashboard/PlaceOrders";
+import PaymentSuccess from "../pages/PaymentSuccess";
+import Payment from "../pages/Dashboard/Payment/Payment";
+import StaffCart from "../pages/StaffCart/StaffCart";
+
+import StaffBookings from "../pages/Dashboard/StaffHome/StaffBookings";
+import HandleBookings from "../pages/Dashboard/StaffHome/HandleBookings";
+
 
 
 const router = createBrowserRouter([
@@ -75,6 +75,10 @@ const router = createBrowserRouter([
       {
         path: "/book",
         element: <PrivateRoute><BookingPage /></PrivateRoute>
+      },
+      {
+        path: "/payment-success",
+        element: <PrivateRoute><PaymentSuccess></PaymentSuccess></PrivateRoute>
       }
     ]
   },
@@ -87,12 +91,16 @@ const router = createBrowserRouter([
         element: <Cart />
       },
       {
+        path: "staffCart",
+        element: <StaffCart></StaffCart>
+      },
+      {
         path: "my-bookings",
         element: <MyBookings />
       },
       {
         path: "orders",
-        element: <Payment />
+        element:<Payment></Payment> 
       },
       {
         path: "paymentHistory",
@@ -104,19 +112,24 @@ const router = createBrowserRouter([
       },
       {
         path: "addReview",
-        element: <UserRoute><AddReview /></UserRoute> // ✅ wrapped
+        element: <UserRoute><AddReview /></UserRoute> 
       },
       {
         path: "myReviews",
-        element: <UserRoute><ManageReviews /></UserRoute> // ✅ wrapped
+        element: <UserRoute><ManageReviews /></UserRoute> 
       },
       {
         path: "staffHome",
         element: <StaffRoute><StaffHome></StaffHome></StaffRoute>
       },
+
       {
         path: "staff-menu",
         element: <StaffRoute><StaffMenu></StaffMenu></StaffRoute>
+      },
+      {
+        path: "staff-bookings",
+        element: <StaffRoute><StaffBookings></StaffBookings></StaffRoute>
       },
       {
         path: "handleBookings",
@@ -148,7 +161,7 @@ const router = createBrowserRouter([
       },
       {
         path: "api/messages",
-        element: <AdminRoute><AllMessages /></AdminRoute> // ✅ fixed path
+        element: <AdminRoute><AllMessages /></AdminRoute> 
       },
       {
         path: "updateItem/:id",
@@ -159,7 +172,7 @@ const router = createBrowserRouter([
           if (!res.ok) {
             throw new Response("Item not found", { status: 404 });
           }
-          return res.json(); // ✅ make sure backend returns JSON
+          return res.json(); 
         }
       }
     ]

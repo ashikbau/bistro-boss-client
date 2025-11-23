@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
-import { FaBook, FaPhone, FaUsers, FaUtensils } from "react-icons/fa";
+import { FaBook, FaHome, FaPhone, FaUsers, FaUtensils } from "react-icons/fa";
 
 const AdminHome = () => {
     const axiosSecure = useAxiosSecure();
@@ -9,7 +9,7 @@ const AdminHome = () => {
         users: 0,
         menuItems: 0,
         message: 0,
-        booking:0
+        booking: 0
     });
 
     useEffect(() => {
@@ -48,6 +48,11 @@ const AdminHome = () => {
                     value={stats.message}
                     icon={<FaPhone className="text-green-500 text-4xl" />}
                 />
+                <StatCard
+                    title="Main Home"
+                    value={stats.message}
+                    icon={<FaHome className="text-green-500 text-4xl" />}
+                />
             </div>
 
             {/* Quick Links */}
@@ -57,7 +62,9 @@ const AdminHome = () => {
                 <Link to="/dashboard/addItems" className="btn btn-accent">➕ Add New Item</Link>
                 <Link to="/dashboard/managebooking" className="btn btn-accent">➕ Manage Booking</Link>
                 <Link to="/dashboard/api/messages" className="btn btn-accent">➕ All Messages</Link>
+                <Link to="/" className="btn btn-primary">Main Home</Link>
             </div>
+            
         </div>
     );
 };

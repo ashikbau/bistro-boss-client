@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 
 
 const useStaffCart = () => {
-    // 🧺 Initialize from localStorage
+    //  Initialize from localStorage
     const [cart, setCart] = useState(() => {
         try {
             const saved = localStorage.getItem("staffCart");
@@ -14,7 +14,7 @@ const useStaffCart = () => {
         }
     });
 
-    // 💾 Persist cart changes to localStorage
+    //  Persist cart changes to localStorage
     useEffect(() => {
         localStorage.setItem("staffCart", JSON.stringify(cart));
     }, [cart]);
@@ -39,7 +39,7 @@ const useStaffCart = () => {
         setCart((prev) => prev.filter((i) => i.productId !== productId));
     };
 
-    // 🧹 Clear all items
+    //  Clear all items
     const clearCart = () => {
         setCart([]);
         localStorage.removeItem("staffCart");

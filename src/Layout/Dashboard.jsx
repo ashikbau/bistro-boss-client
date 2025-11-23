@@ -6,17 +6,19 @@ import {
     FaClipboardList,
     FaUtensilSpoon
 } from "react-icons/fa";
-import { BiFoodMenu } from "react-icons/bi";
 import { NavLink, Outlet } from "react-router-dom";
 import useCart from "../hooks/useCart";
 import useRole from "../hooks/useRole";
 import { useState } from "react";
 
+
 const Dashboard = () => {
     const [cart] = useCart();
     const { isAdmin, isStaff, isUser } = useRole();
-    console.log(isAdmin, isStaff, isUser)
+   
     const [open, setOpen] = useState(false);
+   
+
 
     return (
         <div className="h-screen flex flex-col md:flex-row">
@@ -33,7 +35,7 @@ const Dashboard = () => {
                 className={`bg-yellow-300 w-64 p-4 space-y-2 absolute md:relative h-screen transform md:translate-x-0
         ${open ? "translate-x-0" : "-translate-x-full"}
         transition-transform duration-300 ease-in-out`}
-        >
+            >
                 <ul className="menu space-y-3">
 
                     {/* Admin Links */}
@@ -45,7 +47,7 @@ const Dashboard = () => {
                             <li><NavLink to="/dashboard/managebooking"><FaBook /> Manage Booking</NavLink></li>
                             <li><NavLink to="/dashboard/users"><FaUser /> All Users</NavLink></li>
                             <li><NavLink to="/dashboard/api/messages"><FaUser /> All Messages</NavLink></li>
-                        </>
+                            <li><NavLink to="/"><FaHome /> Main Home</NavLink></li></>
                     )}
 
 
@@ -66,10 +68,26 @@ const Dashboard = () => {
                                 </NavLink>
                             </li>
                             <li>
-                                <NavLink to="/dashboard/placeOrders">
-                                    <FaClipboardList /> Manage Orders
+                                <NavLink to="/dashboard/staff-bookings">
+                                    <FaBook /> Manage Staff Bookings
                                 </NavLink>
                             </li>
+                            <li>
+                                <NavLink to="/dashboard/placeOrders">
+                                    <FaClipboardList /> Staff Cart
+                                </NavLink>
+                            </li>
+                            {/* <li>
+                                <NavLink to="/dashboard/placeOrders" className="flex items-center gap-2 relative">
+                                    <FaClipboardList /> Staff Cart
+
+                                    {staffCart.length > 0 && (
+                                        <span className="badge badge-warning text-white absolute -right-4">
+                                            {staffCart.length}
+                                        </span>
+                                    )}
+                                </NavLink>
+                            </li> */}
                             <div className="divider"></div>
                             <h3 className="text-sm font-semibold text-gray-500 ml-4 mt-2">Quick Access</h3>
 
@@ -105,5 +123,3 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
-
-

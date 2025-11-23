@@ -14,7 +14,7 @@ const useCart = () => {
         queryKey: ['cart', user?.email],
         enabled: user !== null && isUser, // 👈 clearer logic
         queryFn: async () => {
-            // ✅ Correct
+            //  Correct
             const res = await axiosSecure.get(`/carts?email=${encodeURIComponent(user?.email)}`);
 
             return res.data;
