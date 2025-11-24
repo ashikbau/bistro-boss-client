@@ -50,31 +50,36 @@ const MyBookings = () => {
         });
     };
 
+    
     // Update booking
-    const handleUpdate = (b) => {
-        const dataToUpdate = {
-            date: editForm.date ?? b.date,
-            time: editForm.time ?? b.time,
-            guests: editForm.guests ?? b.guests
-        };
-
-        axiosSecure.put(`/my-bookings/${b._id}`, dataToUpdate)
-            .then(res => {
-                // Update UI instantly
-                setBookings(prev =>
-                    prev.map(item =>
-                        item._id.toString() === b._id.toString() ? { ...item, ...res.data } : item
-                    )
-                );
-                setEditing(null);
-                setEditForm({});
-                Swal.fire("Success", "Booking updated successfully", "success");
-            })
-            .catch(err => {
-                console.error("Update failed:", err.response?.data || err.message);
-                Swal.fire("Error", "Failed to update booking", "error");
-            });
+const handleUpdate = async (b) => {
+    const dataToUpdate = {
+        date: editForm.date ?? b.date,
+        time: editForm.time ?? b.time,
+        guests: editForm.guests ?? b.guests
     };
+
+    try {
+        const res = await axiosSecure.put(`/my-bookings/${b._id}`, dataToUpdate);
+        
+        // If backend returns updated booking use that, otherwise merge manually
+        const updatedBooking = res.data.updatedBooking ?? { ...b, ...dataToUpdate };
+
+        setBookings(prev =>
+            prev.map(item =>
+                item._id.toString() === b._id.toString() ? updatedBooking : item
+            )
+        );
+
+        setEditing(null);
+        setEditForm({});
+        Swal.fire("Success", "Booking updated successfully", "success");
+    } catch (err) {
+        console.error("Update failed:", err.response?.data || err.message);
+        Swal.fire("Error", "Failed to update booking", "error");
+    }
+};
+
 
     return (
         <div className="max-w-3xl mx-auto p-4">
