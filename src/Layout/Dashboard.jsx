@@ -63,8 +63,8 @@ const Dashboard = () => {
                                 <FaUtensilSpoon /> Staff Menu
                             </NavLink>
                             <li>
-                                <NavLink to="/dashboard/handleBookings">
-                                    <FaBook /> Manage Bookings
+                                <NavLink to="/dashboard/viewStaffOrder">
+                                    <FaBook /> View Orders By Staff
                                 </NavLink>
                             </li>
                             <li>

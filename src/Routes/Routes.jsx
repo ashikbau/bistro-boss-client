@@ -39,7 +39,9 @@ import Payment from "../pages/Dashboard/Payment/Payment";
 import StaffCart from "../pages/StaffCart/StaffCart";
 
 import StaffBookings from "../pages/Dashboard/StaffHome/StaffBookings";
-import HandleBookings from "../pages/Dashboard/StaffHome/HandleBookings";
+// import HandleBookings from "../pages/Dashboard/StaffHome/HandleBookings";
+import ViewStaffOrder from "../pages/Dashboard/StaffHome/ViewStaffOrder";
+import SingleStaffOrder from "../pages/Dashboard/StaffHome/SingleStaffOrder";
 
 
 
@@ -132,8 +134,12 @@ const router = createBrowserRouter([
         element: <StaffRoute><StaffBookings></StaffBookings></StaffRoute>
       },
       {
-        path: "handleBookings",
-        element: <StaffRoute><HandleBookings></HandleBookings></StaffRoute>
+        path: "viewStaffOrder",
+        element: <StaffRoute><ViewStaffOrder></ViewStaffOrder></StaffRoute>
+      },
+      {
+        path: "viewStaffOrder/:id",
+        element: <StaffRoute><SingleStaffOrder></SingleStaffOrder></StaffRoute>
       },
       {
         path: "placeOrders",

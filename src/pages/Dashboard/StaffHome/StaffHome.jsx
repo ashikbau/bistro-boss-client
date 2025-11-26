@@ -273,7 +273,7 @@ const StaffHome = () => {
                 <Link to="/" className="btn btn-primary">
                     <FaHome className="inline mr-2" /> Main Home
                 </Link>
-                <Link to="/dashboard/handleBookings" className="btn btn-secondary">
+                <Link to="/dashboard/viewStaffOrder" className="btn btn-secondary">
                     <FaBook className="inline mr-2" /> Manage Bookings
                 </Link>
                 <Link to="/dashboard/placeOrders" className="btn btn-accent">
