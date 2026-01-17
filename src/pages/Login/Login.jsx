@@ -1,175 +1,152 @@
-// testing code start from here
 import { useContext, useEffect, useState } from 'react';
 import { FaFacebookF, FaGoogle, FaGithub } from 'react-icons/fa';
 import { loadCaptchaEnginge, LoadCanvasTemplate, validateCaptcha } from 'react-simple-captcha';
 import authenticationImg from "../../assets/others/authentication2.png";
 import authenticationBackgroundImg from "../../assets/others/authentication.png";
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { AuthContex } from '../../provider/AuthProvider';
 import { Helmet } from 'react-helmet-async';
 import Swal from 'sweetalert2';
 import useAxiosPublic from '../../hooks/useAxiosPublic';
+import {
+  GoogleAuthProvider,
+  FacebookAuthProvider,
+  GithubAuthProvider,
+  fetchSignInMethodsForEmail,
+  linkWithCredential,
+  signInWithPopup,
+} from 'firebase/auth';
+import { auth } from "../../firebase/firebase.config";
 
 const Login = () => {
   const [disabled, setDisabled] = useState(true);
   const { loginUser, logInWithGoogle, logInWithFacebook, logInWithGitHub } = useContext(AuthContex);
   const navigate = useNavigate();
-  // const location = useLocation();
-  // const from = location.state?.from?.pathname || "/";
   const axiosPublic = useAxiosPublic();
 
   useEffect(() => {
-    loadCaptchaEnginge(6); // Load captcha with 6 characters
+    loadCaptchaEnginge(6); // 6-character captcha
   }, []);
 
+  // ---------------------
+  // CAPTCHA validation
+  // ---------------------
   const handleValidateCaptcha = (e) => {
     const userCaptchaValue = e.target.value;
-    if (validateCaptcha(userCaptchaValue)) {
-      setDisabled(false);
-    } else {
-      setDisabled(true);
-    }
+    setDisabled(!validateCaptcha(userCaptchaValue));
   };
 
-  // 🔐 Shared function: Check user role and redirect
-  // const handleRoleRedirect = (email) => {
-  //   axiosPublic.get(`/users/${email}`)
-  //     .then(res => {
-  //       const role = res.data?.role;
-  //       if (role === 'admin') {
-  //         navigate('/dashboard/adminHome', { replace: true });
-  //       } else  {
-  //         navigate('/dashboard/userHome', { replace: true });
-  //       }
-  //     })
-  //     .catch(err => {
-  //       console.error('Error fetching user role:', err);
-  //       navigate('/dashboard/userHome', { replace: true }); // Fallback
-  //     });
-  // };
+  // ---------------------
+  // Redirect based on role
+  // ---------------------
   const handleRoleRedirect = async (email) => {
     try {
       const res = await axiosPublic.get(`/users/${email}`);
       const role = res.data?.role;
-
-      if (role === 'admin') {
-        navigate('/dashboard/adminHome', { replace: true });
-      } else if (role === 'staff') {
-        navigate('/dashboard/staffHome', { replace: true });
-      } else {
-        navigate('/dashboard/userHome', { replace: true });
-      }
-    } catch (err) {
-      console.error('Error fetching user role:', err);
+      if (role === 'admin') navigate('/dashboard/adminHome', { replace: true });
+      else if (role === 'staff') navigate('/dashboard/staffHome', { replace: true });
+      else navigate('/dashboard/userHome', { replace: true });
+    } catch {
       navigate('/dashboard/userHome', { replace: true });
     }
   };
 
-
-  const handleLogin = (event) => {
+  // ---------------------
+  // Email/password login
+  // ---------------------
+  const handleLogin = async (event) => {
     event.preventDefault();
     const form = event.target;
     const email = form.email.value;
     const password = form.password.value;
 
-    loginUser(email, password)
-      .then((userCredential) => {
-        Swal.fire({
-          title: "Login successful!",
-          icon: "success"
-        });
-        handleRoleRedirect(userCredential.user.email);
-      })
-      .catch((error) => {
-        Swal.fire({
-          title: "Login Failed",
-          text: error.message,
-          icon: "error"
-        });
-      });
+    try {
+      const userCredential = await loginUser(email, password);
+      Swal.fire({ title: "Login successful!", icon: "success" });
+      handleRoleRedirect(userCredential.user.email);
+    } catch (error) {
+      Swal.fire({ title: "Login Failed", text: error.message, icon: "error" });
+    }
   };
 
-  const handleGoogleSignIn = () => {
-    logInWithGoogle()
-      .then(result => {
-        const userInfo = {
-          name: result.user?.displayName,
-          email: result.user?.email,
-          role: "user"
-         
-
-        };
-
-        axiosPublic.post("/users", userInfo) // You may want to use upsert logic here
-          .then(() => {
-            Swal.fire({
-              title: "Signed in with Google!",
-              icon: "success"
-            });
-            handleRoleRedirect(result.user.email);
-          });
-      })
-      .catch(error => {
-        Swal.fire({
-          title: "Google Login Failed",
-          text: error.message,
-          icon: "error"
-        });
-      });
+  // ---------------------
+  // Social logins
+  // ---------------------
+  const handleGoogleSignIn = async () => {
+    try {
+      const result = await logInWithGoogle();
+      await axiosPublic.post("/users", { name: result.user.displayName, email: result.user.email });
+      navigate('/', { replace: true });
+    } catch (error) {
+      Swal.fire({ title: "Google Login Failed", text: error.message, icon: "error" });
+    }
   };
 
-  const handleFacebookLogIn = () => {
-    logInWithFacebook()
-      .then(result => {
-        const userInfo = {
-          name: result.user?.displayName,
-          email: result.user?.email
-        };
+  const handleFacebookLogIn = async () => {
+    try {
+      const result = await logInWithFacebook();
+      await axiosPublic.post("/users", { name: result.user.displayName, email: result.user.email });
+      navigate('/', { replace: true });
+    } catch (error) {
+      if (error.code === "auth/account-exists-with-different-credential") {
+        const pendingCred = error.credential;
+        const email = error.customData.email;
+        const methods = await fetchSignInMethodsForEmail(auth, email);
 
-        axiosPublic.post("/users", userInfo)
-          .then(() => {
-            Swal.fire({
-              title: "Signed in with Facebook!",
-              icon: "success"
-            });
-            handleRoleRedirect(result.user.email);
-          });
-      })
-      .catch(error => {
-        Swal.fire({
-          title: "Facebook Login Failed",
-          text: error.message,
-          icon: "error"
-        });
-      });
+        let linkedUser;
+        if (methods.includes("google.com")) {
+          Swal.fire("Info", "Please sign in with Google to link Facebook.", "info");
+          linkedUser = await signInWithPopup(auth, new GoogleAuthProvider());
+        }
+        if (methods.includes("github.com")) {
+          Swal.fire("Info", "Please sign in with GitHub to link Facebook.", "info");
+          linkedUser = await signInWithPopup(auth, new GithubAuthProvider());
+        }
+        if (linkedUser) {
+          await linkWithCredential(linkedUser.user, pendingCred);
+          Swal.fire("Success", "Facebook account linked successfully!", "success");
+          navigate('/', { replace: true });
+        }
+      } else {
+        Swal.fire("Login Failed", error.message, "error");
+      }
+    }
   };
 
-  const handleGitHubLogIn = () => {
-    logInWithGitHub()
-      .then(result => {
-        const userInfo = {
-          name: result.user?.displayName,
-          email: result.user?.email
-        };
+  const handleGitHubLogIn = async () => {
+    try {
+      const result = await logInWithGitHub();
+      await axiosPublic.post("/users", { name: result.user.displayName, email: result.user.email });
+      navigate('/', { replace: true });
+    } catch (error) {
+      if (error.code === "auth/account-exists-with-different-credential") {
+        const pendingCred = error.credential;
+        const email = error.customData.email;
+        const methods = await fetchSignInMethodsForEmail(auth, email);
 
-        axiosPublic.post("/users", userInfo)
-          .then(() => {
-            Swal.fire({
-              title: "Signed in with GitHub!",
-              icon: "success"
-            });
-            handleRoleRedirect(result.user.email);
-          });
-      })
-      .catch(error => {
-        Swal.fire({
-          title: "GitHub Login Failed",
-          text: error.message,
-          icon: "error"
-        });
-      });
+        let linkedUser;
+        if (methods.includes("google.com")) {
+          Swal.fire("Info", "Please sign in with Google to link GitHub.", "info");
+          linkedUser = await signInWithPopup(auth, new GoogleAuthProvider());
+        }
+        if (methods.includes("facebook.com")) {
+          Swal.fire("Info", "Please sign in with Facebook to link GitHub.", "info");
+          linkedUser = await signInWithPopup(auth, new FacebookAuthProvider());
+        }
+        if (linkedUser) {
+          await linkWithCredential(linkedUser.user, pendingCred);
+          Swal.fire("Success", "GitHub account linked successfully!", "success");
+          navigate('/', { replace: true });
+        }
+      } else {
+        Swal.fire("Login Failed", error.message, "error");
+      }
+    }
   };
 
+  // ---------------------
+  // JSX
+  // ---------------------
   return (
     <>
       <Helmet>
@@ -185,53 +162,28 @@ const Login = () => {
           <div className="card md:w-1/2 shadow-2xl bg-white bg-opacity-80 p-6">
             <h1 className="text-center text-black font-bold text-2xl">Login</h1>
             <form onSubmit={handleLogin} className="card-body">
-              <fieldset className="fieldset">
-                <label className="label">Email</label>
-                <input type="email" name="email" className="input w-full bg-white" required />
+              <label className="label">Email</label>
+              <input type="email" name="email" className="input w-full bg-white" required />
 
-                <label className="label">Password</label>
-                <input type="password" name="password" className="input w-full" required />
+              <label className="label">Password</label>
+              <input type="password" name="password" className="input w-full bg-white" required />
 
-                <div><a className="link link-hover">Forgot password?</a></div>
+              <div><a className="link link-hover">Forgot password?</a></div>
 
-                {/* CAPTCHA */}
-                <label className="label"><LoadCanvasTemplate /></label>
-                <input
-                  onBlur={handleValidateCaptcha}
-                  type="text"
-                  name="captcha"
-                  className="input w-full"
-                  placeholder="Type the captcha above"
-                  required
-                />
+              <label className="label"><LoadCanvasTemplate /></label>
+              <input type="text" onBlur={handleValidateCaptcha} name="captcha" className="input w-full" placeholder="Type the captcha above" required />
 
-                <input
-                  disabled={disabled}
-                  className="btn bg-yellow-600 mt-4 text-white"
-                  type="submit"
-                  value="Login"
-                />
-              </fieldset>
+              <input disabled={disabled} type="submit" className="btn bg-yellow-600 mt-4 text-white" value="Login" />
             </form>
 
             {/* Social Login */}
             <div className='flex flex-col items-center py-2'>
-              <p><small className='text-yellow-600 font-semibold'>
-                <Link to='/signup'>New here? Create a New Account</Link>
-              </small></p>
-              <div className='mt-2'>
-                <p><small>Or sign in with</small></p>
-              </div>
+              <p><small className='text-yellow-600 font-semibold'><Link to='/signup'>New here? Create a New Account</Link></small></p>
+              <div className='mt-2'><p><small>Or sign in with</small></p></div>
               <div className="flex justify-center gap-x-4 mt-2">
-                <div onClick={handleFacebookLogIn} className="p-3 bg-gray-200 rounded-full cursor-pointer hover:bg-blue-100 border border-black">
-                  <FaFacebookF className="text-black" />
-                </div>
-                <div onClick={handleGoogleSignIn} className="p-3 bg-gray-200 rounded-full cursor-pointer hover:bg-red-100 border border-black">
-                  <FaGoogle className="text-black" />
-                </div>
-                <div onClick={handleGitHubLogIn} className="p-3 bg-gray-200 rounded-full cursor-pointer hover:bg-gray-300 border border-black">
-                  <FaGithub className="text-black" />
-                </div>
+                <div onClick={handleFacebookLogIn} className="p-3 bg-gray-200 rounded-full cursor-pointer hover:bg-blue-100 border border-black"><FaFacebookF /></div>
+                <div onClick={handleGoogleSignIn} className="p-3 bg-gray-200 rounded-full cursor-pointer hover:bg-red-100 border border-black"><FaGoogle /></div>
+                <div onClick={handleGitHubLogIn} className="p-3 bg-gray-200 rounded-full cursor-pointer hover:bg-gray-300 border border-black"><FaGithub /></div>
               </div>
             </div>
           </div>
@@ -247,4 +199,5 @@ const Login = () => {
 };
 
 export default Login;
+
 
