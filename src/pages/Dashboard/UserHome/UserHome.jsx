@@ -7,7 +7,6 @@ import {
     FaBook,
     FaHome
 } from "react-icons/fa";
-import { BiFoodMenu } from "react-icons/bi";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import useCart from "../../../hooks/useCart";
 
@@ -22,7 +21,7 @@ const UserHome = () => {
     useEffect(() => {
         axiosSecure.get("/user-stats")
             .then((res) => {
-                console.log("User Stats Response:", res.data);
+                // console.log("User Stats Response:", res.data);
                 setUserStats({
                     bookings: res.data.bookings || [],
                     reviews: res.data.reviews || [],
@@ -35,7 +34,7 @@ const UserHome = () => {
 
     return (
         <div className="p-6">
-            <h2 className="text-3xl font-bold mb-6">👋 Welcome Back, User!</h2>
+            <h2 className="text-3xl font-bold mb-6"> Welcome Back, User!</h2>
 
             {/* Stat Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -58,7 +57,7 @@ const UserHome = () => {
 
             {/* Recent Bookings */}
             <div className="mt-10">
-                <h3 className="text-xl font-bold mb-4">🗓️ Recent Bookings</h3>
+                <h3 className="text-xl font-bold mb-4"> Recent Bookings</h3>
                 {userStats.bookings.length > 0 ? (
                     userStats.bookings.map((booking) => (
                         <div key={booking._id} className="p-4 bg-white shadow rounded mb-4">
@@ -76,14 +75,14 @@ const UserHome = () => {
             {/* Quick Links */}
             <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 <Link to="/dashboard/addReview" className="btn btn-primary">➕ Add a Review</Link>
-                <Link to="/dashboard/myReviews" className="btn btn-secondary">📋 Manage Reviews</Link>
-                <Link to="/dashboard/my-bookings" className="btn btn-accent">📅 Manage Bookings</Link>
+                <Link to="/dashboard/myReviews" className="btn btn-secondary"> Manage Reviews</Link>
+                <Link to="/dashboard/my-bookings" className="btn btn-accent"> Manage Bookings</Link>
                 <Link to="/book" className="btn btn-outline btn-primary hover:bg-primary hover:text-white">
-                    ✉️ Booking
+                     Booking
                 </Link>
-                <Link to="/" className="btn btn-outline">🏠 Home</Link>
-                <Link to="/menu" className="btn btn-outline">📖 Menu</Link>
-                <Link to="/contact" className="btn btn-outline">✉️ Contact</Link>
+                <Link to="/" className="btn btn-outline"> Home</Link>
+                <Link to="/menu" className="btn btn-outline"> Menu</Link>
+                <Link to="/contact" className="btn btn-outline"> Contact</Link>
             </div>
         </div>
     );
