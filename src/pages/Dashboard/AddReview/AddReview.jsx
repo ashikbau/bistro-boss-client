@@ -115,10 +115,10 @@ const AddReview = () => {
             queryClient.invalidateQueries({ queryKey: ["reviews"] });
             setRating(5);
             setDetails("");
-            alert("✅ Review submitted successfully!");
+            alert(" Review submitted successfully!");
         },
         onError: () => {
-            alert("❌ Failed to submit review!");
+            alert(" Failed to submit review!");
         },
     });
 
@@ -152,7 +152,7 @@ const AddReview = () => {
                     type="text"
                     placeholder="Your Name"
                     value={name}
-                    readOnly // ✅ Make it read-only to avoid editing
+                    readOnly //  Make it read-only to avoid editing
                     className="w-full p-2 border rounded bg-gray-100"
                 />
 
