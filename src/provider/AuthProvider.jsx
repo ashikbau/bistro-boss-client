@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState } from "react";
+// import { createContext, useEffect, useState } from "react";
 import {
   createUserWithEmailAndPassword,
   getAuth,
@@ -30,10 +30,23 @@ facebookProvider.addScope("email");
 
 // Detect mobile devices
 const isMobile = () => /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
 // Detect specifically Chrome on mobile
 const isMobileChrome = () =>
   /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) &&
   /Chrome/i.test(navigator.userAgent);
+
+// Detect in-app browsers (Messenger, WhatsApp, Instagram, etc.)
+const isInAppBrowser = () => {
+  const ua = navigator.userAgent || navigator.vendor || window.opera;
+  return (
+    ua.includes("FBAN") ||      // Facebook app
+    ua.includes("FBAV") ||      // Messenger
+    ua.includes("Instagram") ||
+    ua.includes("WhatsApp") ||
+    ua.includes("Line")
+  );
+};
 
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -54,11 +67,25 @@ const AuthProvider = ({ children }) => {
   /* ---------------- SOCIAL LOGIN ---------------- */
   const socialLogin = async (provider) => {
     setLoading(true);
-    if (isMobile() && !isMobileChrome) {
-      await signInWithRedirect(auth, provider); // Mobile: redirect flow
+
+    // 🚫 In-app browsers: show alert
+    if (isInAppBrowser()) {
+      alert(
+        "Social login does not work inside Messenger or WhatsApp.\n\n" +
+        "Please tap ⋮ or Share and choose 'Open in Browser' to continue."
+      );
+      setLoading(false);
+      return;
+    }
+
+    // 📱 Mobile browser (redirect) → only if not in-app browser
+    if (isMobile() && !isMobileChrome()) {
+      await signInWithRedirect(auth, provider);
       return null;
     }
-    return signInWithPopup(auth, provider); // Desktop: popup
+
+    // 💻 Desktop or Mobile Chrome → popup
+    return signInWithPopup(auth, provider);
   };
 
   const logInWithGoogle = () => socialLogin(googleProvider);
@@ -81,43 +108,48 @@ const AuthProvider = ({ children }) => {
 
   /* ---------------- HANDLE REDIRECT RESULT (MOBILE) ---------------- */
   useEffect(() => {
-  const handleRedirectResult = async () => {
-    setLoading(true);
-    try {
-      const result = await getRedirectResult(auth);
-      if (result?.user) {
-        const currentUser = result.user;
-        // Optionally update Facebook photo
-        const fbProvider = currentUser.providerData.find(p => p.providerId === 'facebook.com');
-        if (fbProvider && !currentUser.photoURL) {
-          const fbPhotoURL = `https://graph.facebook.com/${fbProvider.uid}/picture?type=large`;
-          await updateProfile(currentUser, { photoURL: fbPhotoURL });
-          currentUser.photoURL = fbPhotoURL;
+    const handleRedirectResult = async () => {
+      setLoading(true);
+      try {
+        const result = await getRedirectResult(auth);
+        if (result?.user) {
+          const currentUser = result.user;
+
+          // Optionally update Facebook photo
+          const fbProvider = currentUser.providerData.find(
+            (p) => p.providerId === "facebook.com"
+          );
+          if (fbProvider && !currentUser.photoURL) {
+            const fbPhotoURL = `https://graph.facebook.com/${fbProvider.uid}/picture?type=large`;
+            await updateProfile(currentUser, { photoURL: fbPhotoURL });
+            currentUser.photoURL = fbPhotoURL;
+          }
+
+          // Save to backend
+          await axiosPublic.post("/users", {
+            name: currentUser.displayName,
+            email: currentUser.email,
+          });
+
+          // Save JWT
+          const tokenRes = await axiosPublic.post("/jwt", {
+            email: currentUser.email,
+          });
+          if (tokenRes.data?.token)
+            localStorage.setItem("access-token", tokenRes.data.token);
+          if (tokenRes.data?.role) currentUser.role = tokenRes.data.role;
+
+          setUser(currentUser);
         }
-
-        // Save to backend
-        await axiosPublic.post('/users', {
-          name: currentUser.displayName,
-          email: currentUser.email
-        });
-
-        // Save JWT
-        const tokenRes = await axiosPublic.post('/jwt', { email: currentUser.email });
-        if (tokenRes.data?.token) localStorage.setItem('access-token', tokenRes.data.token);
-        if (tokenRes.data?.role) currentUser.role = tokenRes.data.role;
-
-        setUser(currentUser);
+      } catch (err) {
+        console.error("Redirect login error:", err);
+      } finally {
+        setLoading(false); // IMPORTANT
       }
-    } catch (err) {
-      console.error('Redirect login error:', err);
-    } finally {
-      setLoading(false); // IMPORTANT: set loading false AFTER redirect result
-    }
-  };
+    };
 
-  handleRedirectResult();
-}, [axiosPublic]);
-
+    handleRedirectResult();
+  }, [axiosPublic]);
 
   /* ---------------- AUTH STATE OBSERVER ---------------- */
   useEffect(() => {
@@ -185,4 +217,3 @@ const AuthProvider = ({ children }) => {
 };
 
 export default AuthProvider;
-
