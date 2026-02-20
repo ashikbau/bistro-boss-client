@@ -26,10 +26,16 @@ export default defineConfig({
     include: ['events'], // ✅ Force Vite to bundle this dependency
   },
   server: {
+    host: true,      // 🔹 Allow LAN / tunnel access
+    port: 5173,      // 🔹 Explicit dev server port
+    strictPort: true,// 🔹 Fail if port is busy
     hmr: {
       overlay: false, // Disable the red error overlay
     },
   },
 });
+
+
+
 
 
