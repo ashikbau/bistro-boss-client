@@ -1,162 +1,103 @@
-import { useContext, useEffect, useState } from "react";
-import { Link, NavLink, useNavigate } from "react-router-dom";
-import { AuthContex } from "../../../provider/AuthProvider";
+import { useContext, useState } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import Swal from "sweetalert2";
-import "sweetalert2/dist/sweetalert2.min.css";
-import { FaShoppingCart, FaUserCircle } from "react-icons/fa";
-import useCart from "../../../hooks/useCart";
+import { AuthContex } from "../../provider/AuthProvider";
+import SocialLogin from "../../components/SocialLogin/SocialLogin";
 
-const NavBar = () => {
-  const { user, logOutUser } = useContext(AuthContex);
-  const [cart] = useCart();
+const Login = () => {
+  const { signInUser } = useContext(AuthContex);
   const navigate = useNavigate();
-  const [isMounted, setIsMounted] = useState(false);
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/";
 
-  // Mobile dropdown toggle state
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  useEffect(() => setIsMounted(true), []);
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setLoading(true);
 
-  // ✅ FIXED LOGOUT (only change)
-  const handleLogOut = async () => {
+    const form = e.target;
+    const email = form.email.value;
+    const password = form.password.value;
+
     try {
-      await logOutUser();
-
-      // Navigate immediately (fix for mobile production)
-      navigate("/login", { replace: true });
+      await signInUser(email, password);
 
       Swal.fire({
-        title: "User Logged Out Successfully",
+        title: "Login Successful",
         icon: "success",
         timer: 1500,
         showConfirmButton: false,
-        timerProgressBar: true,
       });
+
+      navigate(from, { replace: true });
     } catch (error) {
       Swal.fire({
         title: "Error",
-        text: "Logout failed",
+        text: error.message,
         icon: "error",
       });
+    } finally {
+      setLoading(false);
     }
   };
 
-  const navStyleDark = ({ isActive }) =>
-    `px-4 py-2 rounded font-bold transition duration-200 flex items-center
-    ${isActive ? "bg-white text-black" : "text-gray-300 hover:text-white hover:bg-gray-700"}`;
-
-  const navStyleLight = ({ isActive }) =>
-    `px-4 py-2 rounded font-bold transition duration-200 flex items-center
-    ${isActive ? "bg-gray-200 text-black" : "text-gray-700 hover:bg-gray-100"}`;
-
-  const navOptions = (mode = "dark") => (
-    <>
-      <li>
-        <NavLink to="/" className={mode === "dark" ? navStyleDark : navStyleLight}>
-          Home
-        </NavLink>
-      </li>
-      <li>
-        <NavLink to="/menu" className={mode === "dark" ? navStyleDark : navStyleLight}>
-          Our Menu
-        </NavLink>
-      </li>
-      <li>
-        <NavLink to="/order/salad" className={mode === "dark" ? navStyleDark : navStyleLight}>
-          Order Food
-        </NavLink>
-      </li>
-      <li>
-        <NavLink to="/contact" className={mode === "dark" ? navStyleDark : navStyleLight}>
-          Contact
-        </NavLink>
-      </li>
-      <li>
-        <NavLink to="/book" className={mode === "dark" ? navStyleDark : navStyleLight}>
-          Booking
-        </NavLink>
-      </li>
-      <li>
-        <NavLink to="/dashboard/cart">
-          <button className="btn flex items-center gap-2">
-            {isMounted && <FaShoppingCart />}
-            <span className="badge badge-secondary">+{cart.length}</span>
-          </button>
-        </NavLink>
-      </li>
-      {user ? (
-        <li>
-          <div className="flex items-center gap-2">
-            {user.photoURL ? (
-              <img
-                src={user.photoURL}
-                className="w-10 h-10 rounded-full border"
-                alt="User"
-              />
-            ) : (
-              isMounted && <FaUserCircle className="text-3xl" />
-            )}
-            <button onClick={handleLogOut} className="btn btn-ghost">
-              SignOut
-            </button>
-          </div>
-        </li>
-      ) : (
-        <li>
-          <NavLink to="/login" className={mode === "dark" ? navStyleDark : navStyleLight}>
-            Login
-          </NavLink>
-        </li>
-      )}
-    </>
-  );
-
   return (
-    <div className="navbar fixed z-10 bg-[#151515] text-neutral-content max-w-screen-lg w-full">
-      <div className="navbar-start">
-        {/* MOBILE DROPDOWN */}
-        <div className="dropdown relative">
-          <button
-            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-            className="btn btn-ghost lg:hidden"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M4 6h16M4 12h8m-8 6h16"
-              />
-            </svg>
-          </button>
+    <div className="min-h-screen flex justify-center items-center bg-gray-100">
+      <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-md">
 
-          {isDropdownOpen && (
-            <ul className="menu menu-sm dropdown-content mt-2 z-50 p-4 shadow-lg bg-white text-black rounded-box w-60 absolute left-0">
-              {navOptions("light")}
-            </ul>
-          )}
+        <h2 className="text-2xl font-bold text-center mb-6">
+          Login
+        </h2>
+
+        {/* Email / Password Login */}
+        <form onSubmit={handleLogin} className="space-y-4">
+          <div>
+            <label className="block mb-1 font-medium">Email</label>
+            <input
+              type="email"
+              name="email"
+              required
+              className="w-full p-2 border rounded"
+              placeholder="Enter your email"
+            />
+          </div>
+
+          <div>
+            <label className="block mb-1 font-medium">Password</label>
+            <input
+              type="password"
+              name="password"
+              required
+              className="w-full p-2 border rounded"
+              placeholder="Enter your password"
+            />
+          </div>
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-yellow-700 text-white py-2 rounded hover:bg-yellow-800 transition"
+          >
+            {loading ? "Logging in..." : "Login"}
+          </button>
+        </form>
+
+        {/* Social Login - Hidden On Mobile */}
+        <div className="hidden md:block mt-6">
+          <SocialLogin />
         </div>
 
-        <Link className="btn btn-ghost text-xl text-neutral-content">
-          Bristo Boss
-        </Link>
-      </div>
+        <p className="text-center mt-4">
+          New here?{" "}
+          <Link to="/signup" className="text-yellow-700 font-semibold">
+            Create an account
+          </Link>
+        </p>
 
-      {/* DESKTOP MENU */}
-      <div className="navbar-center hidden lg:flex">
-        <ul className="menu menu-horizontal px-1 items-center">
-          {navOptions("dark")}
-        </ul>
       </div>
     </div>
   );
 };
 
-export default NavBar;
-
+export default Login;
