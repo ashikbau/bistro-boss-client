@@ -84,7 +84,7 @@ const Login = () => {
         </form>
 
         {/* Social Login - Hidden On Mobile */}
-        <div className="hidden md:block mt-6">
+        <div className="hidden lg:block mt-6">
           <SocialLogin />
         </div>
 
