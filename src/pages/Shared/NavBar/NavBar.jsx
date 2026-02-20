@@ -1,5 +1,3 @@
-
-
 import { useContext, useEffect, useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { AuthContex } from "../../../provider/AuthProvider";
@@ -19,24 +17,28 @@ const NavBar = () => {
 
   useEffect(() => setIsMounted(true), []);
 
-  const handleLogOut = () => {
-    logOutUser()
-      .then(() => {
-        Swal.fire({
-          title: "User Logged Out Successfully",
-          icon: "success",
-          timer: 1500,
-          showConfirmButton: false,
-          timerProgressBar: true,
-        }).then(() => navigate("/"));
-      })
-      .catch(() => {
-        Swal.fire({
-          title: "Error",
-          text: "Logout failed",
-          icon: "error",
-        });
+  // ✅ FIXED LOGOUT (only change)
+  const handleLogOut = async () => {
+    try {
+      await logOutUser();
+
+      // Navigate immediately (fix for mobile production)
+      navigate("/login", { replace: true });
+
+      Swal.fire({
+        title: "User Logged Out Successfully",
+        icon: "success",
+        timer: 1500,
+        showConfirmButton: false,
+        timerProgressBar: true,
       });
+    } catch (error) {
+      Swal.fire({
+        title: "Error",
+        text: "Logout failed",
+        icon: "error",
+      });
+    }
   };
 
   const navStyleDark = ({ isActive }) =>
@@ -141,12 +143,16 @@ const NavBar = () => {
           )}
         </div>
 
-        <Link className="btn btn-ghost text-xl text-neutral-content">Bristo Boss</Link>
+        <Link className="btn btn-ghost text-xl text-neutral-content">
+          Bristo Boss
+        </Link>
       </div>
 
       {/* DESKTOP MENU */}
       <div className="navbar-center hidden lg:flex">
-        <ul className="menu menu-horizontal px-1 items-center">{navOptions("dark")}</ul>
+        <ul className="menu menu-horizontal px-1 items-center">
+          {navOptions("dark")}
+        </ul>
       </div>
     </div>
   );

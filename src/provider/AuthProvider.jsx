@@ -50,7 +50,7 @@ const AuthProvider = ({ children }) => {
   const socialLogin = async (provider) => {
     setLoading(true);
 
-    // 🚫 Block in-app browsers
+    //  Block in-app browsers
     if (isInAppBrowser()) {
       alert("Social login does not work inside Messenger/WhatsApp/Instagram.\nPlease open in browser.");
       setLoading(false);
@@ -86,13 +86,15 @@ const AuthProvider = ({ children }) => {
     updateProfile(auth.currentUser, { displayName: name, photoURL: photo });
 
   /* ---------------- LOGOUT ---------------- */
-  const logOutUser = async () => {
+  const logOutUser = () => {
     setLoading(true);
-    await signOut(auth);
-    localStorage.removeItem("access-token");
-    localStorage.removeItem("role");
-    setUser(null);
-    setLoading(false);
+
+    return signOut(auth).then(() => {
+      localStorage.removeItem("access-token");
+      localStorage.removeItem("role");
+      setUser(null);
+      setLoading(false);
+    });
   };
 
   /* ---------------- HANDLE REDIRECT RESULT ---------------- */
